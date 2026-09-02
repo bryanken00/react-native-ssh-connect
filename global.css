@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design tokens — "Modern" system: monochrome surfaces, a single green accent,
+ * hairline borders, no shadows.
+ *
+ * Each token is an unwrapped "H S% L%" triplet because Tailwind composes it as
+ * hsl(var(--token) / <alpha-value>) to support opacity modifiers.
+ *
+ * This file is the single source of truth for colour. Change it here and both
+ * themes follow; never hardcode hex in a screen. Mirror any change into
+ * src/lib/theme.js — see the note in that file.
+ *
+ * ── Note on `primary` ───────────────────────────────────────────────────────
+ * Primary is INVERTED by design: near-black button with light text in light
+ * mode, near-white with dark text in dark mode. It is the neutral, high-contrast
+ * action colour. The green accent is NOT a button colour — it is reserved for
+ * bars, ticks, focus rings, status dots and chips.
+ */
+@layer base {
+  :root {
+    /* canvas */
+    --background: 0 0% 98%;
+    --foreground: 240 5.9% 10%;
+
+    /* surface — cards, list rows, sheets */
+    --card: 0 0% 100%;
+    --card-foreground: 240 5.9% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 5.9% 10%;
+
+    /* inverted action */
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+
+    /* sunken — wells, segmented track, pressed states */
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    /* accent — the green, used sparingly */
+    --accent: 141.9 69.2% 58%;
+    --accent-foreground: 142.4 71.8% 29.2%;
+
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* hairlines */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 141.9 69.2% 58%;
+
+    /* text ramp — mid tone between foreground and muted */
+    --text-2: 240 3.7% 15.9%;
+    /* softer divider for rows inside a card */
+    --line-soft: 240 4.8% 95.9%;
+    /* link green — darker than the accent so it passes contrast on white */
+    --link: 142.1 76.2% 36.3%;
+
+    /* radius-card 14 · radius-control 9 */
+    --radius: 0.875rem;
+  }
+
+  .dark:root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 7.3% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 7.3% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    /* inverted the other way in dark */
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+
+    --secondary: 240 6.1% 12.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 6.1% 12.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 141.9 69.2% 58%;
+    --accent-foreground: 141.9 69.2% 58%;
+
+    --destructive: 0 90.6% 70.8%;
+    --destructive-foreground: 240 5.9% 10%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 141.9 69.2% 58%;
+
+    --text-2: 240 5% 64.9%;
+    --line-soft: 240 3.7% 15.9%;
+    --link: 141.9 69.2% 58%;
+  }
+}

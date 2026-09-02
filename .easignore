@@ -1,0 +1,28 @@
+# dependencies
+node_modules
+
+# expo / metro
+.expo
+.expo-shared
+.metro-cache
+
+# build outputs
+dist
+build
+web-build
+coverage
+
+# android/ios (if generated)
+android
+ios
+
+# logs
+*.log
+
+# git (optional but usually safe)
+.git
+
+# OS / editor
+.DS_Store
+.vscode
+.idea
