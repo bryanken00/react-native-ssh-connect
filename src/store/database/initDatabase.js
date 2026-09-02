@@ -1,4 +1,5 @@
 import { initExampleTable } from "./tables/example.table";
+import { initSshTable } from "./tables/ssh.table";
 import { runMigrations } from "./migrations";
 import db from "./db";
 
@@ -20,6 +21,12 @@ const initIndexes = () => {
     `CREATE INDEX IF NOT EXISTS idx_items_isSync
      ON items(isSync)`,
   );
+  // The host list is always sorted by last-used; without this every render of
+  // the first screen is a full scan plus a sort.
+  db.execSync(
+    `CREATE INDEX IF NOT EXISTS idx_ssh_hosts_lastConnectedAt
+     ON ssh_hosts(lastConnectedAt)`,
+  );
 };
 
 /**
@@ -32,6 +39,7 @@ export const initDatabase = () => {
   try {
     // ── Tables ───────────────────────────────────────────────────────────────
     initExampleTable();
+    initSshTable();
 
     console.log("[DB] Base tables initialized");
 

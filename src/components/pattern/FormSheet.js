@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 import { useThemeColors } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +50,7 @@ const FormSheet = ({
   contentClassName,
 }) => {
   const colors = useThemeColors();
+  const keyboardInset = useKeyboardInset();
 
   return (
     <Modal
@@ -58,8 +60,15 @@ const FormSheet = ({
       presentationStyle="pageSheet"
     >
       <SafeAreaView className="bg-background flex-1" edges={["top", "bottom"]}>
+        {/* Android's KeyboardAvoidingView does nothing without a resizable
+            window, which edge-to-edge removed — see hooks/useKeyboardInset.
+            Padding here shrinks the ScrollView so the lower fields and the
+            footer buttons stay reachable with the keyboard up. */}
         <KeyboardAvoidingView
-          className="flex-1"
+          style={{
+            flex: 1,
+            paddingBottom: Platform.OS === "android" ? keyboardInset : 0,
+          }}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           {/* ── Header ── */}

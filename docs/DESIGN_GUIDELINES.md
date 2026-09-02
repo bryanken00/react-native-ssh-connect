@@ -1,10 +1,23 @@
 # Design Steering
 
-The single source of truth for how screens should look and feel. The redesigned
-**Login screen** ([src/Screens/Login/Index.js](../src/Screens/Login/Index.js)) is the
-reference implementation — when in doubt, copy its patterns. The goal is a clean,
-modern product built on [React Native Reusables](https://reactnativereusables.com)
-that works in light **and** dark mode and looks correct on phones **and** tablets.
+The single source of truth for how screens should look and feel. The goal is a
+clean, modern product built on
+[React Native Reusables](https://reactnativereusables.com) that works in light
+**and** dark mode and looks correct on phones **and** tablets.
+
+Reference implementations — when in doubt, copy their patterns:
+
+| For | Look at |
+| --- | --- |
+| A list module | [Screens/Ssh/](../src/Screens/Ssh/), or [Screens/Example/](../src/Screens/Example/) for the annotated version |
+| A form | [Screens/Ssh/HostFormSheet.js](../src/Screens/Ssh/HostFormSheet.js) |
+| A full-bleed screen | [Screens/Ssh/Terminal/](../src/Screens/Ssh/Terminal/) |
+| Grouped rows / settings | [components/GroupedList.js](../src/components/GroupedList.js) (kit component; no screen uses it today) |
+
+> The Login screen used to be this document's reference. It was deleted along
+> with the rest of auth — the app has no account. Its patterns (staggered
+> entrance, `AnimatedField`, `StyledInput`, `LogoMark`) still live in
+> `src/components/` and are still the house style for a standalone screen.
 
 ---
 
@@ -63,8 +76,8 @@ this fixed set and nothing else — background / foreground: success
 ### When you cannot use a class
 
 Some APIs take a colour **string** and cannot take a class — lucide icon `color`
-props, `react-native-svg` fills and gradient stops, `StatusBar`, and
-`react-native-tab-view`'s style objects. For those only, use:
+props, `react-native-svg` fills and gradient stops, `StatusBar`, and the
+terminal's per-segment text colours. For those only, use:
 
 ```js
 import { useThemeColors } from "@/hooks/useTheme";
@@ -188,8 +201,9 @@ Tailwind's own weight utilities of the same name.
 
 ---
 
-_Reference: [Login](../src/Screens/Login/Index.js) (full pattern set — gradient
-logo mark, staggered entrance, styled inputs, primary button states) ·
-[Dashboard](../src/Screens/Home/Dashboard/index.js) (header, card, tablet
-`max-w`) · [Settings](../src/Screens/Home/Settings/index.js) (grouped list
-sections, destructive action) · [global.css](../global.css) (tokens)._
+_Reference: [Connections](../src/Screens/Ssh/index.js) (header, stat row, list
+card, FAB, tablet `max-w`) · [Host form](../src/Screens/Ssh/HostFormSheet.js)
+(sheet chrome, labelled inputs, dirty/valid gating) ·
+[Terminal](../src/Screens/Ssh/Terminal/index.js) (full-bleed surface, keyboard
+avoidance, the three connection states) ·
+[global.css](../global.css) (tokens)._

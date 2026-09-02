@@ -85,15 +85,19 @@ background.
 
 ## 3. Where a module lives
 
-**Modules are not tabs.** The tab bar is for top-level destinations only —
-Dashboard and Menu. A module is a row in a `GroupedList` under the Menu tab that
-pushes onto the stack:
+**There is no tab bar any more.** It was removed once this app had a single
+destination — see the note in [Navigation/index.js](../src/Navigation/index.js).
+A module is a screen pushed onto the stack:
 
 1. Name the route in [constants/navigations.js](../src/constants/navigations.js)
-   under `SCREEN_NAVIGATION.Modules`
 2. Register the screen in [Navigation/index.js](../src/Navigation/index.js)
-3. Add a row in [Settings](../src/Screens/Home/Settings/index.js) with an
-   `onPress` that navigates to it
+3. Give it an entry point — a row on the home screen, a header action, or a
+   `GroupedList` on a settings screen if you add one back
+   ([GroupedList](../src/components/GroupedList.js) is still in the kit)
+
+If you ever get back to three or more top-level destinations, a bottom tab bar
+is the right answer and `react-native-tab-view` is still installed. Two is not
+enough to earn one.
 
 The navigator runs with `headerShown: false`, so **pass `onBack` to
 `ScreenHeader`** — it is the only way back off the screen.
@@ -215,8 +219,8 @@ are `{ open, onClose, onSubmit, entity }` — the sheet owns its own `FormSheet`
 
 **Wiring**
 
-- [ ] Route named under `SCREEN_NAVIGATION.Modules`, screen registered in `Navigation/index.js`
-- [ ] Row added to the Menu tab's `GroupedList` — **not** a new bottom tab
+- [ ] Route named in `SCREEN_NAVIGATION`, screen registered in `Navigation/index.js`
+- [ ] Reachable from somewhere — a pushed screen nothing links to is dead code
 - [ ] `onBack={navigation.goBack}` on `ScreenHeader`
 
 **List screen (`index.js`)**

@@ -7,7 +7,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { colorScheme } from "nativewind";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import Navigation from "./src/Navigation";
 import { CustomDialogProvider } from "./src/hooks/useCustomDialog";
@@ -70,8 +70,14 @@ const AppContent = () => {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContent />
-    </QueryClientProvider>
+    // SafeAreaProvider is required for `useSafeAreaInsets()`. The `SafeAreaView`
+    // below happens to work without it — it is a native view that pads itself —
+    // but the hook has nothing to read and throws. `useKeyboardInset` needs the
+    // bottom inset to know how far to actually lift content above the keyboard.
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <AppContent />
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }

@@ -17,12 +17,17 @@ export const BASE_URL =
 export const BASE_URL_FILES = `${BASE_URL}/public`;
 
 /**
- * Demo mode — auth resolves locally and makes **no network calls at all**.
- * Any non-empty email and password signs you in. See `constants/demo.js`.
+ * Demo mode — every SSH session is simulated and **no network traffic leaves
+ * the device**, even in a build that has the native SSH module.
  *
- * Use it to explore the template, build UI before a backend exists, or ship a
- * clickable demo. Turn it off before shipping anything real.
+ * This used to mean "bypass the login form" as well. There is no login any
+ * more, so it now has exactly one job: force `services/ssh` to pick the mock
+ * transport. Use it to record a walkthrough or hand someone a build you do not
+ * want pointed at real servers.
  *
  * Env vars arrive as strings, so `"false"` would be truthy — compare exactly.
+ *
+ * ⚠️ Inlined at build time, not read at runtime. A release built with this set
+ * can never make a real connection, and no in-app toggle can undo it.
  */
 export const IS_DEMO = process.env.EXPO_PUBLIC_DEMO_MODE === "true";

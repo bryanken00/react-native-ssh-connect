@@ -1,4 +1,4 @@
-import { THEME } from "@/lib/theme";
+import { THEME, TERMINAL_PALETTE } from "@/lib/theme";
 import useThemeStore from "@/store/useThemeStore";
 
 /**
@@ -17,6 +17,17 @@ import useThemeStore from "@/store/useThemeStore";
 export const useThemeColors = () => {
   const isDarkMode = useThemeStore((s) => s.isDarkMode);
   return isDarkMode ? THEME.dark : THEME.light;
+};
+
+/**
+ * The 16 ANSI colours for the active scheme.
+ *
+ * Only the terminal needs this. Everything else colours itself with a Tailwind
+ * class — see the note on TERMINAL_PALETTE in lib/theme.js.
+ */
+export const useTerminalPalette = () => {
+  const isDarkMode = useThemeStore((s) => s.isDarkMode);
+  return isDarkMode ? TERMINAL_PALETTE.dark : TERMINAL_PALETTE.light;
 };
 
 /** Colours plus the toggle, for screens that render a theme switch. */

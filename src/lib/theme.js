@@ -6,8 +6,8 @@ import { DarkTheme, DefaultTheme } from "@react-navigation/native";
  * ⚠️ These values are duplicated by necessity: CSS custom properties live in
  * the NativeWind style engine and cannot be read from JS at runtime, but
  * React Navigation needs plain colour strings for its container theme, and
- * some APIs (lucide `color`, svg fills, StatusBar, react-native-tab-view)
- * take colours as props rather than classes.
+ * some APIs (lucide `color`, svg fills, StatusBar, the terminal's per-segment
+ * text colours) take colours as props rather than classes.
  *
  * If you change a colour in global.css, change it here too. Anything you can
  * express as a `className` should use the class and never touch this file.
@@ -56,6 +56,65 @@ export const THEME = {
     text2: "hsl(240 5% 64.9%)",
     lineSoft: "hsl(240 3.7% 15.9%)",
     link: "hsl(141.9 69.2% 58%)",
+  },
+};
+
+/**
+ * The 16 ANSI colours a terminal needs, per scheme.
+ *
+ * This is the one place hardcoded colour is unavoidable: a remote shell sends
+ * `ESC[31m` and expects red — there is no token for "the colour the server
+ * asked for", and no className can carry a value decided at runtime. The
+ * terminal parser stores palette *names*; `TerminalLine` resolves them here at
+ * render, so a theme toggle re-colours scrollback that has already arrived.
+ *
+ * Both sets are tuned for their own background: the light set is darkened so
+ * yellow and cyan stay legible on `--background: 0 0% 98%`, the dark set is
+ * the familiar bright xterm ramp. `foreground` is the colour of unstyled
+ * output and deliberately matches THEME.*.foreground.
+ *
+ * Anything a *chrome* element needs (headers, buttons, status) belongs in
+ * THEME above and should be a Tailwind class at the call site. Only bytes that
+ * came off the wire use this.
+ */
+export const TERMINAL_PALETTE = {
+  light: {
+    foreground: "#18181b",
+    black: "#27272a",
+    red: "#b91c1c",
+    green: "#15803d",
+    yellow: "#a16207",
+    blue: "#1d4ed8",
+    magenta: "#a21caf",
+    cyan: "#0e7490",
+    white: "#71717a",
+    brightBlack: "#52525b",
+    brightRed: "#dc2626",
+    brightGreen: "#16a34a",
+    brightYellow: "#ca8a04",
+    brightBlue: "#2563eb",
+    brightMagenta: "#c026d3",
+    brightCyan: "#0891b2",
+    brightWhite: "#18181b",
+  },
+  dark: {
+    foreground: "#fafafa",
+    black: "#3f3f46",
+    red: "#f87171",
+    green: "#4ade80",
+    yellow: "#fbbf24",
+    blue: "#60a5fa",
+    magenta: "#e879f9",
+    cyan: "#22d3ee",
+    white: "#d4d4d8",
+    brightBlack: "#71717a",
+    brightRed: "#fca5a5",
+    brightGreen: "#86efac",
+    brightYellow: "#fcd34d",
+    brightBlue: "#93c5fd",
+    brightMagenta: "#f0abfc",
+    brightCyan: "#67e8f9",
+    brightWhite: "#ffffff",
   },
 };
 

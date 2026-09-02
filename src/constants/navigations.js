@@ -9,7 +9,6 @@
  *
  *   export const SCREEN_NAVIGATION = {
  *     Home: "Home",
- *     Login: "Login",
  *     Account: {
  *       Profile: "Profile",
  *       ChangePassword: "ChangePassword",
@@ -21,12 +20,12 @@
  *   SCREEN_NAVIGATION.Account.Profile
  */
 export const SCREEN_NAVIGATION = {
+  /** The saved-connections list. There is no tab bar — this is the app. */
   Home: "Home",
-  Login: "Login",
 
-  // Modules reached from the Menu tab, not from the tab bar itself.
-  // Keep the tab bar for top-level destinations only.
-  Modules: {
-    Items: "Items",
+  // The terminal is pushed on top of Home, so the back gesture ends the
+  // session and returns to the list.
+  Ssh: {
+    Terminal: "Terminal",
   },
 };

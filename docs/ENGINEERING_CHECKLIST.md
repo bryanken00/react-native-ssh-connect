@@ -102,7 +102,10 @@ refetches, and `retry: 3` retries client errors. Decide those once, globally.
 - [ ] Checked at ~320px (small phone) **and** in landscape
 - [ ] Long strings have `numberOfLines` and can truncate without breaking layout
 - [ ] Text survives a large system font size — test with OS font scaling at max
-- [ ] `SafeAreaView` on full-screen screens; `KeyboardAvoidingView` on forms
+- [ ] `SafeAreaView` on full-screen screens
+- [ ] Anything the keyboard could cover is padded with `useKeyboardInset()`.
+      `KeyboardAvoidingView` alone is **not** enough — on Android it does
+      nothing at all (see CLAUDE.md)
 - [ ] Touch targets ≥ 44px, or `hitSlop` to reach it
 
 ---
@@ -165,11 +168,13 @@ A screen is not done when the happy path renders.
 ## 9. Before you ship
 
 ```bash
-npx expo-doctor@latest        # expect 20/20
+npx expo-doctor@latest        # expect 20/21 — see below
 npx expo export --platform android --clear
 ```
 
-- [ ] Doctor passes
+- [ ] Doctor shows **only** the known failure: `@dylankenneally/react-native-ssh-sftp`
+      flagged "Untested on New Architecture". Anything else is yours.
+      Reasoning and how to clear it: [SSH.md](SSH.md#expo-doctor-reports-2021)
 - [ ] Bundle succeeds, and the asset list contains what you expect and nothing more
 - [ ] Checked in light **and** dark
 - [ ] Actually ran the change on a device — a bundle proves it *resolves*, not
@@ -188,5 +193,9 @@ deliberate to-do, not an oversight.
 | No `React.memo` on rows | [DataListRow.js](../src/components/pattern/DataListRow.js) | Every row re-renders when any list state changes |
 | No `getItemLayout` / windowing props | [DataList.js](../src/components/pattern/DataList.js) | Fine at 5 rows, degrades in the hundreds |
 | Search is not debounced | [FilterBar.js](../src/components/pattern/FilterBar.js) | Filters on every keystroke; becomes a request per keystroke once wired to an API |
-| Only the tab shell reads `useWindowDimensions` | [Home/index.js](../src/Screens/Home/index.js) | Nothing else adapts to width; tablet layout is `max-w-*` only |
+| Nothing reads `useWindowDimensions` | app-wide | The tab shell that used to was deleted; tablet layout is now `max-w-*` only |
 | No error state in the example module | [Screens/Example/](../src/Screens/Example/) | In-memory data cannot fail — add one when you wire a real API |
+| Terminal has no cursor row | [lib/terminal.js](../src/lib/terminal.js) | Vertical cursor moves are dropped, so `vim`/`htop`/`less` stack instead of repainting. Line-oriented tools are unaffected |
+| Terminal lines wrap, so no `getItemLayout` | [TerminalView.js](../src/components/terminal/TerminalView.js) | Deliberate — horizontal scrolling to read one line is worse on a phone. Costs the instant scroll-to-offset |
+| SSH on iOS unverified on device | [services/ssh/nativeClient.js](../src/services/ssh/nativeClient.js) | The package's podspec still names the legacy `React` pod and pulls NMSSH; `pod install` may need attention. Android builds clean |
+| Secrets capped at ~2KB | [services/ssh/secrets.js](../src/services/ssh/secrets.js) | `expo-secure-store` warns past 2048 bytes and can fail on Android. ed25519 keys fit; 4096-bit RSA does not. `save` surfaces the failure |

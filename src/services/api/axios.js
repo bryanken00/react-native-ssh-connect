@@ -1,6 +1,27 @@
 import axios from "axios";
-import { useUserAuthStore } from "../../store/useUserAuthStore";
 import { BASE_URL } from "../../constants";
+
+/**
+ * Configured axios instances.
+ *
+ * ── What changed when login was removed ─────────────────────────────────────
+ * These used to carry a bearer token from the auth store and reset that store
+ * on `Invalid token.`. The store is gone, so both interceptors went with it —
+ * what is left is a plain instance with a base URL and the right content type.
+ *
+ * (The response interceptor also called `Toast.show` without importing Toast,
+ * which would have thrown a ReferenceError the first time a request failed
+ * that way. It never fired because nothing used it.)
+ *
+ * Nothing in the app calls these today: the SSH client talks to servers
+ * directly over its own transport, not over HTTP. They stay as the starting
+ * point for whenever this app does need a backend — a sync endpoint, a licence
+ * check, telemetry.
+ *
+ * If you add auth later, the request interceptor goes back here and reads the
+ * token from wherever you keep it. Keep it out of `requests/`: this file
+ * describes how to reach the server, and `requests/` owns the side effects.
+ */
 
 export const axiosAuth = axios.create({
   baseURL: BASE_URL,
@@ -10,7 +31,10 @@ export const axiosAuth = axios.create({
   },
 });
 
-export const createAxiosInstanceWithInterceptor = (type = "data") => {
+/**
+ * @param {'data'|'form'} type - 'data' sends JSON, anything else multipart
+ */
+export const createAxiosInstance = (type = "data") => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
   };
@@ -21,51 +45,5 @@ export const createAxiosInstanceWithInterceptor = (type = "data") => {
     headers["content-type"] = "multipart/form-data";
   }
 
-  const instance = axios.create({
-    baseURL: BASE_URL,
-    headers,
-  });
-
-  instance.interceptors.request.use(async (config) => {
-    try {
-      const { token } = useUserAuthStore.getState();
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      } else {
-        throw new Error("Authorization token not found.");
-      }
-    } catch (error) {
-      console.error({ error });
-    }
-    return config;
-  });
-
-  instance.interceptors.response.use(
-    (response) => {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
-      return response;
-    },
-    function (error) {
-      const { reset } = useUserAuthStore.getState();
-      const errMessage = error.response?.data;
-      if (errMessage?.message === "Invalid token." || errMessage?.code == 300) {
-        Toast.show({
-          swipeable: true,
-          type: "error",
-          text1: "",
-          text2:
-            error?.response?.data?.message ||
-            "Unable to process transaction. You have to login again.",
-        });
-
-        reset();
-      }
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
-      return Promise.reject(error);
-    },
-  );
-
-  return instance;
+  return axios.create({ baseURL: BASE_URL, headers });
 };
